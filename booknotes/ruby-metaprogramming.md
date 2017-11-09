@@ -128,7 +128,35 @@ protected 方法只能在类内部被调用，可显式调用。
 
 `Object.send` 可打破以上规则，调用任何方法。
 
+## 第3章：星期二：方法
 
+解决代码繁复的问题。
+
+### Dynamic Dispatch
+
+在运行时动态调用方法。
+
+`Object#send` 动态的调用，将方法名作为参数传入。
+
+`Object#public_send` 动态调用，只调用共有方法。
+
+### Dynamic Method
+
+在运行时动态创建方法。
+
+`Module#define_method` 动态定义，将方法名作为参数传入。
+
+### Method Missing
+
+他是 `BasicObject` 的私有方法，默认抛出 `NoMethodError`.
+
+别人如果问一些不存在的东西，就这样做。
+
+
+
+https://relishapp.com/womply/ruby-style-guide/docs/metaprogramming
+
+http://yehudakatz.com/2009/11/15/metaprogramming-in-ruby-its-all-about-the-self/
 
 # Singleton Class
 普通对象的单件类
