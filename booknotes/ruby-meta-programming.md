@@ -22,7 +22,7 @@
 
 打开类又叫猴子补丁，注意不要覆盖了已有的方法，影响其他代码。
 
-使用细化 refinement 可以确保猴子补丁只在特定的作用域中有效，提高安全性。
+使用细化 `refinement` 可以确保猴子补丁只在特定的作用域中有效，提高安全性。
 
 元编程是把双刃剑，他可能带给你奇效，也可带给你毁灭，如何控制他要看使用者本身的功力。
 
@@ -42,13 +42,13 @@ class 关键字更像是一个作用域操作符，把你带到类的上下文�
 
 ### 类和模块
 
-所有类都是从 Class 实例化而来的。
+所有类都是从 `Class` 实例化而来的。
 
-所有模块都是从 Module 实例化而来的。
+所有模块都是从 `Module` 实例化而来的。
 
-Class 是 Module 的子类，所以一个类也是一个模块。
+`Class` 是 `Module` 的子类，所以一个类也是一个模块。
 
-类是增强版的模块，拥有三个特有的方法 (:allocate, :new, :superclass).
+类是增强版的模块，拥有三个特有的方法 `:allocate, :new, :superclass`.
 
 类和模块而这个概念十分相似，区分二者可以让代码更清晰，意图更明显。
 
@@ -120,11 +120,11 @@ Class 是 Module 的子类，所以一个类也是一个模块。
 
 ### Access Control
 
-public 方法可以再任何地方被调用。
+`public` 方法可以再任何地方被调用。
 
-private 方法只能在类内部被隐式调用。
+`private` 方法只能在类内部被隐式调用。
 
-protected 方法只能在类内部被调用，可显式调用。
+`protected` 方法只能在类内部被调用，可显式调用。
 
 `Object.send` 可打破以上规则，调用任何方法。
 
@@ -227,7 +227,7 @@ k.methods(false)   #=> [:singleton_method]
   when you call a method on an object, ruby first go to its class and broswer all instance methods,
   if it doesn't find the method there, it continues search up the ancestors chain. 
   if still not found, call method_missing
-method_missing an instance method of the BasicObject which that every object inherits
+  method_missing an instance method of the BasicObject which that every object inherits
 
 4. Module#define_method create methods dynamically
   use define_method and method_missing to do some tricks
