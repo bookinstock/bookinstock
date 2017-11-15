@@ -37,3 +37,9 @@ cmd + shift + u => utilities
 ## Alfred
 
 https://www.alfredapp.com/
+
+https://www.alfredapp.com/blog/
+
+https://www.alfredapp.com/help/getting-started/
+
+https://www.youtube.com/watch?v=uMldWh0JEUY
