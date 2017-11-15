@@ -1,18 +1,20 @@
 # Mac
 
-cmd + space => spotlight
+## Basic
 
 cmd + opt => alfred
 
-opt + drag => copy file
+cmd + space => spotlight
 
-## Application
+cmd + option + d => hide/show dock
 
-cmd + h => hide current app
+cmd + h => hide current window
 
 cmd + tab => switch application
 
-cmd + option + d => hide/show dock
+## Files
+
+opt + drag => copy file
 
 ## Screenshots
 
@@ -22,15 +24,16 @@ cmd + shift + 4
 
 cmd + shift + ctrl + 4
 
+cmd + shift + a
+
 ## Open File
 
-cmd + shift + a => application
+cmd + shift + h => home
 
 cmd + shift + d => desktop
 
 cmd + shift + u => utilities
 
-cmd + shift + h => home
-
+## Alfred
 
 https://www.alfredapp.com/
