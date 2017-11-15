@@ -100,164 +100,96 @@ switch project: cmd + ctrl + p, then select by name
 
 ## Palette
 
-open: `cmd+shift+p`
+cmd + shift + p
 
-project: `add, edit, close, save as`
+project -> new, edit, close, save as
 
-file: `new, rename, move, dup, delete, copy`
+file -> new, rename, move, copy, dup, delete
 
-convert case: `lower, upper, swap, title`
+conver case -> lower, upper, swap, title
 
-permute lines: `reverse, shuffle, uniq`
+permute lines -> reverse, shuffle, uniq
 
-sort lines: `sort lines, case sensitive`
+sort lines -> sort line (case sensitive or not)
 
-indentation: `reindent, space, tab`
+indentation -> reindent, space, tab
 
-html: `encode`
+html -> encode
 
 snippet
 
-package
-
-##### Color Highlighter
-
-##### Emmet
-
-html => todo ...
-
-css => todo ...
-
-[youtube](https://www.youtube.com/watch?v=U4lFXtLF5Cs&list=PLpcSpRrAaOaqQMDlCzE_Y6IUUzaSfYocK&index=7)
-
-## Configuration
-
-### Key bindings
-
-preferences->key bindings
-
- { "keys": ["super+n"], "command": "new_window" }
-
-## Automate code creation
-
-### Snippets
-
-fields, place holders, mirrored fields, substitutions ...
-
-save snippet as `.sublime-snippet`
-
-### Macros
-
-record macro: `ctrl + q`
-
-playback macro: `ctrl + shift + q`
-
-save macro as `.sublime-macro`
-
-binding key with saved macros.
-
-my bind key: `opt + enter`
-
-**= Sublime Text =**
-
-Sublime Text is a cross-platform text and code editor for OS X, Windows, and Linux with many innovative features and a thriving ecosystem of add-on packages. This course reveals some of the basic, not-so-basic, and downright hidden features of the editor, and shows you how to become a more productive developer. Author Kevin Yank shows how to write and edit basic code, tweak the editing configuration to your preference, and automate code creation with macros and snippets. He also surveys a dozen of the best add-on packages for Sublime Text, which speed up some of the more tedious programming tasks.
-
-Topics include:
-
-- Opening, viewing, and editing files
-- Adding custom themes and colour schemes
-- Performing different types of find and replace operations
-- Editing multiple lines simultaneously
-- Automating tasks with macros and snippets
-- Working with add-ons like Package Control, Line Endings, and Hyperlink Helper
-
-sublime open from terminal
-
-$ subl file / folder / .
-
-sublime-packages
-
-google ~ sublime text package control
-
-cmd + shift + p => open command palette -> install package
+#### Package Control
 
 color theme: dracula, dayle, monokai, pred, soda
 
 package: bracket highlighter
 
+package: Color Highlighter
+
+package: Gutter Color
+
 package: sidebar enhancement
 
 package: sublime code intel
 
-package: sublime linter (sublimelinter-ruby)
+package: sublime linter
 
-package: markdown editing
+package: markdown editing [site](https://github.com/SublimeText-Markdown/MarkdownEditing)
 
-package: emmet << emmet livestyle
+package: emmet << emmet livestyle [youtube](https://www.youtube.com/watch?v=U4lFXtLF5Cs&list=PLpcSpRrAaOaqQMDlCzE_Y6IUUzaSfYocK&index=7)
 
 package: html css js prettify
 
 package: converto utf8
 
-package: themr
-
 package: ctags ~> check source code
 
-other packages with rails dev:
+package: alignment
 
-alignment, simple rails navigator, rails related files, ctags, coffeescript, rubytest
+package: simple rails navigator
 
-basic operations
+package: rails related files
 
+package: PlainTasks [site](https://github.com/aziz/PlainTasks)
 
+package: PlainNotes [site](https://github.com/aziz/PlainNotes)
 
+package: GitGutter
 
+package: TrailingSpaces
 
+package: GhostText
 
+## Configuration
 
+preferences -> settings
 
+preferences -> key bindings
 
-**Sublime Text**
+## Automate code creation
 
-install package control
+### Snippets
 
-package control => shift + cmd + p
+save snippet as `.sublime-snippet`
 
-plugins:
+fields, place holders, mirrored fields, substitutions ...
 
-- [MarkDown Editing](https://github.com/SublimeText-Markdown/MarkdownEditing)
-- <https://github.com/SublimeText-Markdown/MarkdownEditing>
+### Macros
 
-[Plain Tasks](https://packagecontrol.io/packages/Plain%E2%80%8BTasks) - 一个自以为是的待办事项列表插件。
+ctrl + q => record macro
 
-[Emmet](https://github.com/sergeche/emmet-sublime) - zen coding的升级版，对于前端来说，可是必备插件。
+ctrl + shift + q => playback macro
 
-[GitGutter](https://packagecontrol.io/packages/GitGutter) - 显示Git的状态，比对。
+save macro as `.sublime-macro`
 
+binding key with saved macros.
 
+common bind key: opt + enter
 
-sublime:
+## References
 
-TrailingSpaces
+[ref_1](http://engageinteractive.co.uk/blog/getting-setup-on-sublime-text-3-2017-edition)
 
-{ "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
+[ref_2](https://www.bilibili.com/video/av11969967/?from=search&seid=1476235877742273679#page=4)
 
-
-
-subl 快捷键
-
-
-
-- - best sublime  plugin for frontend dev - <https://www.shopify.com/partners/blog/the-best-sublime-text-plugins-for-front-end-developers>
-
-  - - <http://engageinteractive.co.uk/blog/getting-setup-on-sublime-text-3-2017-edition>
-
-
-
-course
-
-https://www.bilibili.com/video/av11969967/?from=search&seid=1476235877742273679#page=4
-
-config
-
-https://github.com/happypeter/sublime-config/blob/master/Preferences.sublime-settings
+[ref_3](https://github.com/happypeter/sublime-config/blob/master/Preferences.sublime-settings)
