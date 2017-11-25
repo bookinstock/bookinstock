@@ -105,9 +105,6 @@ end
 
 >> foo
 ArgumentError: missing keywords: a, b
-    from (irb):168:in `foo'
-    from (irb):173
-    from /Users/wendelu/.rbenv/versions/2.3.3/bin/irb:11:in `<main>'
 >>
 
 ## with defaults
@@ -153,8 +150,6 @@ end
 => true
 >> arr[0] = 'foo'
 RuntimeError: can't modify frozen Array
-    from (irb):150
-    from /Users/wendelu/.rbenv/versions/2.3.3/bin/irb:11:in `<main>'
 >> arr[0] << 'foo'
 => "afoo"
 >> arr
@@ -286,9 +281,6 @@ end
 => "aa"
 >> b.foo(a)
 NoMethodError: protected method `ok' called for #<A:0x007fef6d1aa7e8>
-	from (irb):61:in `foo'
-	from (irb):70
-	from /Users/wendelu/.rbenv/versions/2.3.3/bin/irb:11:in `<main>'
 ```
 
 ```
@@ -581,7 +573,7 @@ end
 RuntimeError
 "wtf"
 [
-  "(irb):67:in `foo'", 
+  "(irb):67:in `foo'",
   "(irb):71:in `irb_binding'",
   ...
 ]
@@ -696,6 +688,311 @@ inspect
 => inspect
 ```
 
+```
+# Splat
+
+>> foo = [1,2,3,4,5]
+=> [1, 2, 3, 4, 5]
+>> bar = [*foo]
+=> [1, 2, 3, 4, 5]
+>> bazz = [foo]
+=> [[1, 2, 3, 4, 5]]
+```
+
+```
+# to integer
+
+>> "foo".to_i
+=> 0
+>> "123foo".to_i
+=> 123
+>> Integer("123foo")
+ArgumentError: invalid value for Integer(): "123foo"
+
+# to float
+
+>> "foo".to_f
+=> 0.0
+>> "1.23foo".to_f
+=> 1.23
+>> Float("1.23foo")
+ArgumentError: invalid value for Float(): "1.23foo"
+```
+
+```
+# to_str
+
+class A
+  def name
+    @name ||= "wende"
+  end
+end
+
+>> "hi" + A.new
+TypeError: no implicit conversion of A into String
+
+class A
+  def to_str
+    name
+  end
+end
+
+>> "hi" + A.new
+=> "hiwende"
+>> "hello" << A.new
+=> "hellowende"
+```
+
+```
+# to_ary
+
+class A
+  def name
+    @name ||= "wende"
+  end
+end
+
+>> [1,2,3] + A.new
+TypeError: no implicit conversion of A into Array
+
+class A
+  def to_ary
+    [name]
+  end
+end
+
+>> [1,2,3] + A.new
+=> [1, 2, 3, "wende"]
+>> [1,2,2].concat(A.new)
+=> [1, 2, 2, "wende"]
+```
+
+```
+# Comparable
+
+class A
+  include Comparable
+
+  attr_accessor :name, :age
+
+  def initialize(name:, age:)
+    @name = name
+    @age = age
+  end
+
+  def <=>(a)
+    age <=> a.age
+  end
+end
+
+>> a1 = A.new(name: 'foo', age: 18)
+=> #<A:0x007f8f7a905a68 @name="foo", @age=18>
+>> a2 = A.new(name: 'bar', age: 19)
+=> #<A:0x007f8f7a8f4808 @name="bar", @age=19>
+>> a3 = A.new(name: 'bar', age: 20)
+=> #<A:0x007f8f7a8df2c8 @name="bar", @age=20>
+>> a2.between?(a1, a3)
+=> true
+```
+
+```
+# Inspection
+
+obj.methods
+obj.public_methods
+obj.protected_methods
+obj.private_methods
+obj.singleton_methods
+
+Klass.public_instance_methods
+Klass.protected_instance_methods
+Klass.private_instance_methods
+```
+
+```
+# String
+
+a = "foo"
+b = 'bar'
+c = %q(abc def)
+d = %Q(abc #{666})
+e = <<SQL
+  SELECT * FROM USERS
+  WHERE users.name = "wende";
+SQL
+
+>> a = "hifoobar"
+=> "hifoobar"
+>> a["foo"] = "ok"
+=> "ok"
+>> a[-3..-1] = "bazz"
+=> "bazz"
+>> a
+=> "hiokbazz"
+
+>> "abcfoodef".include?("foo")
+=> true
+>> "abcfoodef".start_with?("abc")
+=> true
+>> "abcfoodef".end_with?("def")
+=> true
+>> "abcfoodef".empty?
+=> false
+
+>> "abcabc".size
+=> 6
+>> "abcabc".length
+=> 6
+>> "abcabc".count('a')
+=> 2
+>> "abcabc".count('ab')
+=> 4
+>> "abcabc".count('a-c')
+=> 6
+>> "abcabc".count('a-c', '^b')
+=> 4
+>> "abcabc".count('^b-c')
+=> 2
+
+>> "abcabc".index("b")
+=> 1
+>> "abcabc".rindex("b")
+=> 4
+
+>> "a".ord
+=> 97
+>> "A".ord
+=> 65
+>> 97.chr
+=> "a"
+>> 65.chr
+=> "A"
+
+>> "aBc".upcase
+=> "ABC"
+>> "aBc".downcase
+=> "abc"
+>> "aBc".swapcase
+=> "AbC"
+
+>> "aaaaa".ljust(10)
+=> "aaaaa     "
+>> "aaaaa".rjust(10)
+=> "     aaaaa"
+>> "aaaaa".ljust(10, '>')
+=> "aaaaa>>>>>"
+>> "aaaaa".rjust(10, '<')
+=> "<<<<<aaaaa"
+
+>> "aaa".chop
+=> "aa"
+>> "aaa".chop.chop
+=> "a"
+>> "aaa".chomp
+=> "aaa"
+>> "aaa".chomp("a")
+=> "aa"
+>> "aaa\n".chomp
+=> "aaa"
+
+>> "abc".clear
+=> ""
+>> "abc".replace("foo")
+=> "foo"
+>> "abc".delete("a")
+=> "bc"
+>> "abc".delete("^a")
+=> "a"
+>> "abc".delete("a-b")
+=> "c"
+>> "abcd".delete("a-c", '^b')
+=> "bd"
+
+>> "foo".crypt("ab")
+=> "abQ9KY.KfrYrc"
+
+>> "foo".next
+=> "fop"
+>> "foo".succ
+=> "fop"
+
+>> "10".to_i(2)
+=> 2
+>> "10".to_i(10)
+=> 10
+>> "10".to_i(16)
+=> 16
+>> "10".oct
+=> 8
+>> "10".hex
+=> 16
+
+>> __ENCODING__
+=> UTF-8
+>> "foo".encoding
+=> #<Encoding:UTF-8>
+>> "bar".encode("US-ASCII")
+=> "bar"
+>> "bar".encode!("US-ASCII")
+=> "bar"
+```
+
+```
+# Symbol
+
+>> Symbol.all_symbols.size
+=> 3566
+>> ok = 1
+=> 1
+>> Symbol.all_symbols.grep(/^ok/)
+=> [:ok]
+
+>> :aBc.upcase
+=> :ABC
+>> :aBc.downcase
+=> :abc
+>> :aBc.swapcase
+=> :AbC
+>> :aBc.next
+=> :aBd
+>> :aBc.succ
+=> :aBd
+>> :aBc[-1]
+=> "c"
+>> :abc.casecmp(:aaa)
+=> 1
+```
+
+```
+# Numeric
+
+>> rand(100)
+=> 28
+
+>> 99.4.round
+=> 99
+>> 99.5.round
+=> 100
+
+>> 010
+=> 8
+>> 0x10
+=> 16
+>> 0.zero?
+=> true
+```
+
+```
+# date & time
+
+require 'time'
+add Time
+require 'date'
+add Date
+add DateTime
+
+
+```
 
 ## 第三部分：动态编程
 
