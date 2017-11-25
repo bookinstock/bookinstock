@@ -987,15 +987,114 @@ SQL
 
 require 'time'
 add Time
+
 require 'date'
 add Date
 add DateTime
 
+>> Time.now
+=> 2017-11-25 19:15:21 +0800
+>> Time.new
+=> 2017-11-25 19:15:32 +0800
+>> Time.now.to_i
+=> 1511608558
+>> Time.at(1511608558)
+=> 2017-11-25 19:15:58 +0800
+>> Time.mktime(1991,10,25,10,30,30)
+=> 1991-10-25 10:30:30 +0800
+>> Time.local(1991,10,25,10,30,30)
+=> 1991-10-25 10:30:30 +0800
+>> Time.parse('oct 25 1991 10:30:59')
+=> 1991-10-25 10:30:59 +0800
 
+>> Date.today
+=> #<Date: 2017-11-25 ((2458083j,0s,0n),+0s,2299161j)>
+>> Date.new(1991,10,25)
+=> #<Date: 1991-10-25 ((2448555j,0s,0n),+0s,2299161j)>
+>> Date.civil(1991,10,25)
+=> #<Date: 1991-10-25 ((2448555j,0s,0n),+0s,2299161j)>
+>> Date.parse('1991/10/25')
+=> #<Date: 1991-10-25 ((2448555j,0s,0n),+0s,2299161j)>
+>> Date.parse('1991-10-25')
+=> #<Date: 1991-10-25 ((2448555j,0s,0n),+0s,2299161j)>
+>> Date.parse('October 25 1991')
+=> #<Date: 1991-10-25 ((2448555j,0s,0n),+0s,2299161j)>
+>> Date.parse('25 oct 1991')
+=> #<Date: 1991-10-25 ((2448555j,0s,0n),+0s,2299161j)>
+
+>> DateTime.now
+=> #<DateTime: 2017-11-25T19:18:52+08:00 ((2458083j,40732s,871820000n),+28800s,2299161j)>
+>> DateTime.new(1991,10,25,10,30,59)
+=> #<DateTime: 1991-10-25T10:30:59+00:00 ((2448555j,37859s,0n),+0s,2299161j)>
+>> DateTime.civil(1991,10,25,10,30,59)
+=> #<DateTime: 1991-10-25T10:30:59+00:00 ((2448555j,37859s,0n),+0s,2299161j)>
+>> DateTime.parse('oct 25 1991 10:30:59')
+=> #<DateTime: 1991-10-25T10:30:59+00:00 ((2448555j,37859s,0n),+0s,2299161j)>
+
+>> dt.year
+=> 1991
+>> dt.month
+=> 10
+>> dt.day
+=> 25
+>> dt.hour
+=> 10
+>> dt.minute # min
+=> 30
+>> dt.second # sec
+=> 59
+>> dt.sunday?
+=> false
+>> dt.leap?
+=> false
+
+>> dt.to_s
+=> "1991-10-25T10:30:59+00:00"
+>> dt.strftime("%m-%d-%y")
+=> "10-25-91"
+>> dt.strftime("%Y %b %d %a")
+=> "1991 Oct 25 Fri"
+>> dt.strftime("%Y %B %d %A")
+=> "1991 October 25 Friday"
+>> dt.strftime("%B %d %Y")
+=> "October 25 1991"
+>> dt.strftime("%H:%M:%S")
+=> "10:30:59"
+>> dt.strftime("%c")
+=> "Fri Oct 25 10:30:59 1991"
+>> dt.strftime("%x")
+=> "10/25/91"
+
+>> dt >> 1
+=> #<DateTime: 1991-11-25T10:30:59+00:00 ((2448586j,37859s,0n),+0s,2299161j)>
+>> dt << 1
+=> #<DateTime: 1991-09-25T10:30:59+00:00 ((2448525j,37859s,0n),+0s,2299161j)>
+>> dt.next_day
+=> #<DateTime: 1991-10-26T10:30:59+00:00 ((2448556j,37859s,0n),+0s,2299161j)>
+>> dt.prev_day
+=> #<DateTime: 1991-10-24T10:30:59+00:00 ((2448554j,37859s,0n),+0s,2299161j)>
+>> dt.next_day(3)
+=> #<DateTime: 1991-10-28T10:30:59+00:00 ((2448558j,37859s,0n),+0s,2299161j)>
+
+>> d = Date.today
+=> #<Date: 2017-11-25 ((2458083j,0s,0n),+0s,2299161j)>
+>> next_week = d + 7
+=> #<Date: 2017-12-02 ((2458090j,0s,0n),+0s,2299161j)>
+>> d.upto(next_week) { |date| puts "#{date} is a #{date.strftime("%A")}" }
+2017-11-25 is a Saturday
+2017-11-26 is a Sunday
+2017-11-27 is a Monday
+2017-11-28 is a Tuesday
+2017-11-29 is a Wednesday
+2017-11-30 is a Thursday
+2017-12-01 is a Friday
+2017-12-02 is a Saturday
+=> #<Date: 2017-11-25 ((2458083j,0s,0n),+0s,2299161j)>
+
+ri Date
 ```
 
 ## 第三部分：动态编程
-
 
 ```
 # basic object
