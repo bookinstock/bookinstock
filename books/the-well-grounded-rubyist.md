@@ -3,7 +3,7 @@
 ## 第一部分：语言基础
 
 ```
-# ruby config
+# RUBY Config
 
 >> RbConfig::CONFIG["bindir"]
 => "/Users/wendelu/.rbenv/versions/2.3.3/bin"
@@ -29,7 +29,7 @@
 ```
 
 ```
-# global variables
+# Global Variables
 
 >> p $0 # file name
 "irb"
@@ -46,7 +46,7 @@ check lib/ruby/2.3.0/English.rb
 ```
 
 ```
-# object_id
+# Object#object_id
 
 >> "foo".object_id == "foo".object_id
 => false
@@ -57,7 +57,7 @@ check lib/ruby/2.3.0/English.rb
 ```
 
 ```
-# send
+# Object#send
 
 class A
   def foo
@@ -76,7 +76,7 @@ end
 ```
 
 ```
-# args *
+# Args *
 
 def foo(first, *args, last)
   p first, args, last
@@ -90,9 +90,9 @@ end
 ```
 
 ```
-# params
+# Params
 
-## without defaults
+## Without defaults
 
 def foo(a:, b:)
   p a, b
@@ -161,7 +161,7 @@ RuntimeError: can't modify frozen Array
 => ["afoo", "b", "c"]
 ```
 ```
-# print format
+# Print Format
 
 >> foo = 123.456
 => 123.456
@@ -178,7 +178,7 @@ ri sprintf
 ```
 
 ```
-# prepend
+# Module#prepend
 
 module M
   def hi
@@ -202,7 +202,7 @@ end
 ```
 
 ```
-# class variables
+# Class Variables
 
 class A
   @@foo = "bar"
@@ -230,7 +230,7 @@ end
 ```
 
 ```
-# class instance variables
+# Class Instance Variables
 
 class A
   @foo = "bar"
@@ -292,12 +292,14 @@ NoMethodError: protected method `ok' called for #<A:0x007fef6d1aa7e8>
 ```
 
 ```
+# ruby command options
+
 ➜  ruby -e 'p Kernel.private_instance_methods.sort'
 [:Array, :Complex, :Float, :Hash, :Integer, :Rational, :String, :__callee__, :__dir__, :__method__, :`, :abort, :at_exit, :autoload, :autoload?, :binding, :block_given?, :caller, :caller_locations, :catch, :eval, :exec, :exit, :exit!, :fail, :fork, :format, :gem, :gem_original_require, :gets, :global_variables, :initialize_clone, :initialize_copy, :initialize_dup, :iterator?, :lambda, :load, :local_variables, :loop, :open, :p, :print, :printf, :proc, :putc, :puts, :raise, :rand, :readline, :readlines, :require, :require_relative, :respond_to_missing?, :select, :set_trace_func, :sleep, :spawn, :sprintf, :srand, :syscall, :system, :test, :throw, :trace_var, :trap, :untrace_var, :warn]
 ```
 
 ```
-# condition
+# Condition
 
 a = 1 if false
 
@@ -313,7 +315,7 @@ end
 ```
 
 ```
-# regex
+# Regex
 
 >> n = /wende/.match("hi, zhaobo lu")
 => nil
@@ -496,7 +498,7 @@ end
 ```
 
 ```
-# block args
+# Block Args
 
 def foo
   yield(1, 2, 3, 4, 5)
@@ -511,7 +513,7 @@ end
 ```
 
 ```
-# closure
+# Closure
 
 def foo
   x = 1
@@ -530,7 +532,7 @@ end
 ```
 
 ```
-# closure more
+# Closure more
 
 def foo
   x = "foo"
@@ -565,7 +567,7 @@ end
 ```
 
 ```
-# exception
+# Exception
 
 def foo
   raise 'wtf'
@@ -586,7 +588,7 @@ RuntimeError
 ```
 
 ```
-# exception more
+# Exception more
 
 def foo
   fh = File.open(filename)
@@ -599,7 +601,103 @@ end
 
 ## 第二部分：内之类和模块
 
+```
+# Sugar
 
+class A
+  def [](idx)
+    foo[idx]
+  end
+
+  def []=(idx, val)
+    foo[idx] = val
+  end
+
+  def <<(val)
+    foo << val
+  end
+
+  def foo
+    @foo ||= []
+  end
+end
+
+>> a = A.new
+=> #<A:0x007fa801921638>
+>> a << 1 << 2
+=> [1, 2]
+>> a[0]
+=> 1
+>> a[0] = "ok"
+=> "ok"
+>> a.foo
+=> ["ok", 2]
+```
+
+```
+# Sugar more
+
+class A
+  def +@
+    foo << "ok"
+  end
+
+  def -@
+    foo.tap(&:pop)
+  end
+
+  def !
+    foo.reverse!
+  end
+
+  def foo
+    @foo ||= []
+  end
+end
+
+>> a = A.new
+=> #<A:0x007fa803216648>
+>> +a
+=> ["ok"]
+>> +a
+=> ["ok", "ok"]
+>> +a
+=> ["ok", "ok", "ok"]
+>> -a
+=> ["ok", "ok"]
+>> a.foo << "bar"
+=> ["ok", "ok", "bar"]
+>> !a
+=> ["bar", "ok", "ok"]
+>> not a
+=> ["ok", "ok", "bar"]
+```
+
+```
+# Object string format
+
+class A
+  def to_s
+    "to_s"
+  end
+
+  def inspect
+    "inspect"
+  end
+end
+
+>> a = A.new
+=> inspect
+>> puts a
+to_s
+=> nil
+>> p a
+inspect
+=> inspect
+```
+
+
+## 第三部分：动态编程
 
 
 ```
