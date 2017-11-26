@@ -1302,6 +1302,106 @@ end
 => {:a=>"a", :b=>"b"}
 ```
 
+```
+# Range
+
+>> a = 1..10
+=> 1..10
+>> a.include? 1
+=> true
+>> a.include? 10
+=> true
+
+>> b = 1...10
+=> 1...10
+>> b.include? 1
+=> true
+>> b.include? 10
+=> false
+
+>> b.begin
+=> 1
+>> b.end
+=> 10
+>> b.exclude_end?
+=> true
+
+>> b.include? 10
+=> false
+>> b.cover? 9
+=> true
+
+>> c = 'a'..'z'
+=> "a".."z"
+>> c.include? 'bcd'
+=> false
+>> c.cover? 'bcd'
+=> true
+>> (1.0..2.0).include? 1.5
+=> true
+```
+
+```
+# Set
+
+require 'set'
+
+>> foo = ['a', 'b', 'c']
+=> ["a", "b", "c"]
+>> set = Set.new(foo)
+=> #<Set: {"a", "b", "c"}>
+
+>> set << "d"
+=> #<Set: {"a", "b", "c", "d"}>
+>> set << "d"
+=> #<Set: {"a", "b", "c", "d"}>
+>> set.add "d"
+=> #<Set: {"a", "b", "c", "d"}>
+>> set.add? "d"
+=> nil
+>> set.delete("d")
+=> #<Set: {"a", "b", "c"}>
+
+## union + , |
+## intersetction &
+## difference -
+
+>> set_1 = Set.new([1, 2, 3])
+=> #<Set: {1, 2, 3}>
+>> set_2 = Set.new([2, 3, 4])
+=> #<Set: {2, 3, 4}>
+>> set_1 + set_2
+=> #<Set: {1, 2, 3, 4}>
+>> set_1 | set_2
+=> #<Set: {1, 2, 3, 4}>
+>> set_1 & set_2
+=> #<Set: {2, 3}>
+>> set_1 - set_2
+=> #<Set: {1}>
+>> set_1 ^ set_2
+=> #<Set: {4, 1}>
+
+>> a
+=> [1, 2, 3]
+>> b
+=> {:a=>3, :b=>4}
+>> a.to_set.merge(b.values)
+=> #<Set: {1, 2, 3, 4}>
+
+>> set_1 = Set.new([1, 2, 3])
+=> #<Set: {1, 2, 3}>
+>> set_2 = Set.new([2, 3])
+=> #<Set: {2, 3}>
+>> set_1.superset? set_2
+=> true
+>> set_2.subset? set_1
+=> true
+>> set_1.proper_superset? set_2
+=> true
+>> set_2.proper_subset? set_1
+=> true
+```
+
 ## 第三部分：动态编程
 
 ```
