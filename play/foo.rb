@@ -1,5 +1,9 @@
-Array.try_convert(obj) # to_ary
-Hash.try_convert(obj) # to_hash
-IO.try_convert(obj) # to_io
-Regexp.try_convert(obj) # to_regexp
-String.try_convert(obj) # to_str
+def foo(a: 1, b: 2, **c)
+  p a,b,c
+end
+
+>> foo(a:11, b:22, c:33, d:44)
+11
+22
+{:c=>33, :d=>44}
+=> [11, 22, {:c=>33, :d=>44}]

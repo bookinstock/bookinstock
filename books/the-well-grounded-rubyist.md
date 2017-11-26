@@ -122,6 +122,18 @@ end
 1
 2
 => [1, 2]
+
+# double *
+
+def bazz(a: 1, b: 2, **c)
+  p a,b,c
+end
+
+>> bazz(a:11, b:22, c:33, d:44)
+11
+22
+{:c=>33, :d=>44}
+=> [11, 22, {:c=>33, :d=>44}]
 ```
 
 ```
@@ -1223,6 +1235,11 @@ end
 => [1, 2, 3, 4]
 >> [1, 2, 3] & [2, 3, 4]
 => [2, 3]
+
+>> [1, 1, 2] | [2, 2, 3]
+=> [1, 2, 3]
+>> [1, 1, 2] & [2, 2, 3]
+=> [2]
 ```
 
 ```
@@ -1237,6 +1254,52 @@ end
 1: b => 2
 2: c => 3
 => {:a=>1, :b=>2, :c=>3}
+
+>> foo = { a: 1, b: 2, c: 3 }
+=> {:a=>1, :b=>2, :c=>3}
+>> foo[:a] = "fff"
+=> "fff"
+>> foo.store(:b, "bbb")
+=> "bbb"
+>> foo
+=> {:a=>"fff", :b=>"bbb", :c=>3}
+
+>> foo = { a: 1, b: 2, c: 3 }
+=> {:a=>1, :b=>2, :c=>3}
+>> foo.fetch(:ok, "unknown")
+=> "unknown"
+>> foo
+=> {:a=>1, :b=>2, :c=>3}
+>> foo.values_at(:a, :b, :ok)
+=> [1, 2, nil]
+
+>> foo = { a: 1, b: 2, c: 3 }
+=> {:a=>1, :b=>2, :c=>3}
+>> foo.update(a: "a", b: "b") # bang!
+=> {:a=>"a", :b=>"b", :c=>3}
+>> foo.merge(a: "aa", b: "bb")
+=> {:a=>"aa", :b=>"bb", :c=>3}
+>> foo
+=> {:a=>"a", :b=>"b", :c=>3}
+
+>> foo = { a: 1, b: 2, c: 3 }
+=> {:a=>1, :b=>2, :c=>3}
+>> foo.select { |k,v| v > 2 }
+=> {:c=>3}
+>> foo.reject { |k,v| v > 2 }
+=> {:a=>1, :b=>2}
+>> foo.select! { |k,v| v > 2 } # bang! same as :keep_if
+>> foo.reject! { |k,v| v > 2 } # bang! same as :delete_if
+
+>> foo = { a: 1, b: 2, c: 3 }
+=> {:a=>1, :b=>2, :c=>3}
+>> foo.invert
+=> {1=>:a, 2=>:b, 3=>:c}
+
+>> foo.clear
+=> {}
+>> foo.replace(a: 'a', b: 'b')
+=> {:a=>"a", :b=>"b"}
 ```
 
 ## 第三部分：动态编程
