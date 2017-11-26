@@ -1094,6 +1094,151 @@ add DateTime
 ri Date
 ```
 
+```
+# try_convert
+
+Array.try_convert(obj)  # to_ary
+Hash.try_convert(obj)   # to_hash
+String.try_convert(obj) # to_str
+Regexp.try_convert(obj) # to_regexp
+IO.try_convert(obj)     # to_io
+```
+
+```
+# Array
+
+>> Array.new(3)
+=> [nil, nil, nil]
+>> Array.new(3, "foo")
+=> ["foo", "foo", "foo"]
+>> Array.new(3) { |n| n + 1 }
+=> [1, 2, 3]
+
+>> %w[a b c]
+=> ["a", "b", "c"]
+>> %i[a b c]
+=> [:a, :b, :c]
+>> %W[#{1+1} #{2+2}]
+=> ["2", "4"]
+>> %I[#{1+1} #{2+2}]
+=> [:"2", :"4"]
+
+class A
+  def to_ary
+    ["ok"]
+  end
+
+  def to_a
+    ["foo", "bar"]
+  end
+end
+>> Array(A.new)
+=> ["ok"]
+
+class B
+  def to_a
+    ["foo", "bar"]
+  end
+end
+>> Array(B.new)
+=> ["foo", "bar"]
+
+>> arr = ["foo", "bar", "bazz"]
+=> ["foo", "bar", "bazz"]
+>> arr[0,2]
+=> ["foo", "bar"]
+>> arr.slice(0, 2)
+=> ["foo", "bar"]
+>> arr.values_at(0, 2)
+=> ["foo", "bazz"]
+
+>> a = ["a", "b", "c"]
+=> ["a", "b", "c"]
+>> a.unshift("foo")
+=> ["foo", "a", "b", "c"]
+>> a.shift
+=> "foo"
+
+>> a
+=> ["a", "b", "c"]
+>> a.push("bar")
+=> ["a", "b", "c", "bar"]
+>> a.pop
+=> "bar"
+>> a
+=> ["a", "b", "c"]
+
+>> a = %w[a b c d e f]
+=> ["a", "b", "c", "d", "e", "f"]
+>> a.shift(2)
+=> ["a", "b"]
+>> a.pop(2)
+=> ["e", "f"]
+>> a
+=> ["c", "d"]
+
+>> a.replace(["c","b","a"])
+=> ["c", "b", "a"]
+>> a.clear
+=> []
+
+>> [1, [2, 3], [4, [5, 6]]].flatten
+=> [1, 2, 3, 4, 5, 6]
+>> [1, [2, 3], [4, [5, 6]]].flatten(1)
+=> [1, 2, 3, 4, [5, 6]]
+
+>> [1, 2, 3].reverse
+=> [3, 2, 1]
+
+>> [1, 2, 3].join('-')
+=> "1-2-3"
+>> [1, 2, 3] * '-'
+=> "1-2-3"
+
+>> [1, 2, 3, 1, 2].uniq # compare with ==
+=> [1, 2, 3]
+
+>> [1, nil, 2, nil, 3].compact
+=> [1, 2, 3]
+
+>> [1, 2, 3, 4, 5].size
+=> 5
+>> [1, 2, 3, 4, 5].length
+=> 5
+>> [1, 2, 3, 4, 5].count { |e| e > 3 }
+=> 2
+>> [1, 2, 3, 4, 5].empty?
+=> false
+>> [1, 2, 3, 4, 5].include? 2
+=> true
+
+>> [1, 2, 3, 4, 5].first 2
+=> [1, 2]
+>> [1, 2, 3, 4, 5].last 2
+=> [4, 5]
+>> [1, 2, 3, 4, 5].sample 2
+=> [3, 1]
+
+>> [1 ,2 ,3] | [2, 3, 4]
+=> [1, 2, 3, 4]
+>> [1, 2, 3] & [2, 3, 4]
+=> [2, 3]
+```
+
+```
+# Hash
+
+foo = { a: 1, b: 2, c: 3 }
+foo.each.with_index do |(key, value), idx|
+  puts "#{idx}: #{key} => #{value}"
+end
+
+0: a => 1
+1: b => 2
+2: c => 3
+=> {:a=>1, :b=>2, :c=>3}
+```
+
 ## 第三部分：动态编程
 
 ```

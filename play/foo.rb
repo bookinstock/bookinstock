@@ -1,12 +1,5 @@
-
-
-a = "foo"
-b = 'bar'
-c = %q(abc def)
-d = %Q(abc #{666})
-e = <<SQL
-  SELECT * FROM USERS
-  WHERE users.name = "wende";
-SQL
-
-p a,b,c,d,e
+Array.try_convert(obj) # to_ary
+Hash.try_convert(obj) # to_hash
+IO.try_convert(obj) # to_io
+Regexp.try_convert(obj) # to_regexp
+String.try_convert(obj) # to_str
