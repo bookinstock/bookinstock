@@ -1535,6 +1535,93 @@ end
 => #<Enumerator: [1, 2, 3]:inject(0)>
 >> en.each {|a, e| a + e}
 => 6
+
+>> [1, 2, 3].to_enum
+=> #<Enumerator: [1, 2, 3]:each>
+>> { a: 1, b: 2 }.to_enum
+=> #<Enumerator: {:a=>1, :b=>2}:each>
+
+>> e = [1, 2, 3].to_enum
+=> #<Enumerator: [1, 2, 3]:each>
+>> e.next
+=> 1
+>> e.next
+=> 2
+>> e.next
+=> 3
+>> e.next
+StopIteration: iteration reached an end
+
+module Music
+  class Scale
+    NOTES = %w[c c# d d#]
+
+    def play
+      NOTES.each { |note| yield note }
+    end
+  end
+end
+?> scale = Music::Scale.new
+=> #<Music::Scale:0x007ff784019338>
+>> enum = scale.enum_for(:play)
+=> #<Enumerator: #<Music::Scale:0x007ff784019338>:play>
+>> enum.map(&:upcase)
+=> ["C", "C#", "D", "D#"]
+
+>> a = [1, 2, 3, 4]
+=> [1, 2, 3, 4]
+>> a.each_slice(2)
+=> #<Enumerator: [1, 2, 3, 4]:each_slice(2)>
+>> a.each_slice(2) {|a| p a}
+[1, 2]
+[3, 4]
+=> nil
+>> a.each_slice(2).map {|first, second| "#{first}-#{second}"}
+=> ["1-2", "3-4"]
+>> a.select.with_index {|e, i| i.odd?}
+=> [2, 4]
+>> a.map.with_index {|e, i| [e, i]}
+=> [[1, 0], [2, 1], [3, 2], [4, 3]]
+```
+
+```
+# XOR
+
+>> 123 ^ 111
+=> 20
+>> 123 ^ 111 ^ 111
+=> 123
+>> 123 ^ 111 ^ 123
+=> 111
+
+class String
+  def ^(key)
+    kenum = key.each_byte.cycle
+    str = each_byte.map {|byte| byte ^ kenum.next}.pack("C*")
+    str.force_encoding(self.encoding)
+  end
+end
+>> "abc" ^ "wtf"
+=> "\x16\x16\x05"
+>> "abc" ^ "wtf" ^ "wtf"
+=> "abc"
+```
+
+```
+# lazy
+
+>> (1..Float::INFINITY).lazy
+=> #<Enumerator::Lazy: 1..Infinity>
+>> (1..Float::INFINITY).lazy.select {|e| e % 3 == 0}
+=> #<Enumerator::Lazy: #<Enumerator::Lazy: 1..Infinity>:select>
+>> (1..Float::INFINITY).lazy.select {|e| e % 3 == 0}.first(5)
+=> [3, 6, 9, 12, 15]
+>> (1..Float::INFINITY).lazy.select {|e| e % 3 == 0}.take(5).force
+=> [3, 6, 9, 12, 15]
+```
+
+```
+# Regex
 ```
 
 ## 第三部分：动态编程
