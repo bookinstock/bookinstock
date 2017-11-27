@@ -1402,6 +1402,141 @@ require 'set'
 => true
 ```
 
+```
+# Enumerable
+
+enum = 1..3
+>> enum.include? 2
+=> true
+>> enum.all? {|e| e.odd?}
+=> false
+>> enum.any? {|e| e.odd?}
+=> true
+>> enum.one? {|e| e.even?}
+=> true
+>> enum.none? {|e| e.even?}
+=> false
+
+>> enum.find {|e| e==2}
+=> 2
+>> enum.find(->{"ok"}) {|e| e==10}
+=> "ok"
+
+## grep -> ===
+>> ['ab', 'bb', 'ac'].grep(/a/)
+=> ["ab", "ac"]
+>> [1, 2, 3, 4, 5, 6].grep(3..5)
+=> [3, 4, 5]
+>> [1, 2, '3', 4, '5'].grep(String)
+=> ["3", "5"]
+
+>> [1, 2, 3, 4, 5].group_by {|e| e.odd?}
+=> {true=>[1, 3, 5], false=>[2, 4]}
+>> [1, 2, 3, 4, 5].partition {|e| e.odd?}
+=> [[1, 3, 5], [2, 4]]
+
+>> a = [1, 2, 3, 4, 5]
+=> [1, 2, 3, 4, 5]
+>> a.first
+=> 1
+>> a.first(2)
+=> [1, 2]
+>> a.take(2)
+=> [1, 2]
+>> a.drop(2)
+=> [3, 4, 5]
+
+>> [1, 2, 3].min
+=> 1
+>> [1, 2, 3].max
+=> 3
+>> [1, 2, 3].minmax
+=> [1, 3]
+>> [-1, 2, 3].max_by {|e| -e}
+=> 1
+>> [-1, 2, 3].min_by {|e| -e}
+=> 3
+>> [1, 2, 3].minmax_by {|e| -e}
+=> [3, 1]
+
+>> [1, 2, 3].reverse_each {|e| p e}
+>> [1, 2, 3].each_with_index {|e,i| p e,i}
+>> {a:1, b:2}.each_with_index {|(k,v),i| p k,v,i}
+
+>> (1..6).each_slice(2) {|e| p e}
+[1, 2]
+[3, 4]
+[5, 6]
+=> nil
+>> (1..6).each_cons(2) {|e| p e}
+[1, 2]
+[2, 3]
+[3, 4]
+[4, 5]
+[5, 6]
+=> nil
+>> (1..5).each_slice(2) {|e| p e}
+[1, 2]
+[3, 4]
+[5]
+=> nil
+
+>> (1..3).cycle(2) {|e| p e}
+1
+2
+3
+1
+2
+3
+=> nil
+
+>> (1..3).inject(0) {|acc, e| acc + e} # reduce
+=> 6
+>> (1..3).map {|e| e + 1} # collect
+=> [2, 3, 4]
+
+>> 'abc'.each_char {|e| p e}
+>> 'abc'.each_byte {|e| p e}
+>> "ab\ncd\neee".each_line {|e| p e}
+
+>> [1,"3",2,"6","5",4].sort {|a,b| a.to_i <=> b.to_i}
+=> [1, 2, "3", 4, "5", "6"]
+>> [1,"3",2,"6","5",4].sort_by {|e| e.to_i}
+=> [1, 2, "3", 4, "5", "6"]
+```
+
+```
+# Enumerator
+
+e_1 = Enumerator.new do |y|
+  y << 1
+  y << 2
+  y << 3
+end
+>> e_1.map(&:to_i)
+=> [1, 2, 3]
+
+e_2 = Enumerator.new do |y|
+  y.yield 1
+  y.yield 2
+  y.yield 3
+end
+>> e_2.map(&:to_i)
+=> [1, 2, 3]
+
+>> [1, 2, 3].enum_for(:select)
+=> #<Enumerator: [1, 2, 3]:select>
+>> [1, 2, 3].to_enum(:select)
+=> #<Enumerator: [1, 2, 3]:select>
+>> [1, 2, 3].select
+=> #<Enumerator: [1, 2, 3]:select>
+
+>> en = [1, 2, 3].to_enum(:inject, 0)
+=> #<Enumerator: [1, 2, 3]:inject(0)>
+>> en.each {|a, e| a + e}
+=> 6
+```
+
 ## 第三部分：动态编程
 
 ```

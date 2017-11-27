@@ -1,9 +1,17 @@
-def foo(a: 1, b: 2, **c)
-  p a,b,c
+e_1 = Enumerator.new do |y|
+  y << 1
+  y << 2
+  y << 3
 end
 
->> foo(a:11, b:22, c:33, d:44)
-11
-22
-{:c=>33, :d=>44}
-=> [11, 22, {:c=>33, :d=>44}]
+>> e_1.map(&:to_i)
+=> [1, 2, 3]
+
+e_2 = Enumerator.new do |y|
+  y.yield 1
+  y.yield 2
+  y.yield 3
+end
+
+>> e_2.map(&:to_i)
+=> [1, 2, 3]
