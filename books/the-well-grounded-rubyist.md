@@ -1362,22 +1362,26 @@ require 'set'
 >> set.delete("d")
 => #<Set: {"a", "b", "c"}>
 
-## union + , |
-## intersetction &
-## difference -
-
 >> set_1 = Set.new([1, 2, 3])
 => #<Set: {1, 2, 3}>
 >> set_2 = Set.new([2, 3, 4])
 => #<Set: {2, 3, 4}>
+
+## union + , |
 >> set_1 + set_2
 => #<Set: {1, 2, 3, 4}>
 >> set_1 | set_2
 => #<Set: {1, 2, 3, 4}>
+
+## intersetction &
 >> set_1 & set_2
 => #<Set: {2, 3}>
+
+## difference -
 >> set_1 - set_2
 => #<Set: {1}>
+
+## xor
 >> set_1 ^ set_2
 => #<Set: {4, 1}>
 
@@ -1561,7 +1565,7 @@ module Music
     end
   end
 end
-?> scale = Music::Scale.new
+>> scale = Music::Scale.new
 => #<Music::Scale:0x007ff784019338>
 >> enum = scale.enum_for(:play)
 => #<Enumerator: #<Music::Scale:0x007ff784019338>:play>
@@ -1572,12 +1576,9 @@ end
 => [1, 2, 3, 4]
 >> a.each_slice(2)
 => #<Enumerator: [1, 2, 3, 4]:each_slice(2)>
->> a.each_slice(2) {|a| p a}
-[1, 2]
-[3, 4]
-=> nil
 >> a.each_slice(2).map {|first, second| "#{first}-#{second}"}
 => ["1-2", "3-4"]
+
 >> a.select.with_index {|e, i| i.odd?}
 => [2, 4]
 >> a.map.with_index {|e, i| [e, i]}
@@ -1622,6 +1623,78 @@ end
 
 ```
 # Regex
+
+>> 'abcd' =~ /abc/
+=> 0
+>> /abc/ =~ 'abcd'
+=> 0
+>> /abc/ =~ 'abd'
+=> nil
+
+>> 'abcd'.match(/abc/)
+=> #<MatchData "abc">
+>> /abc/.match("abcd")
+=> #<MatchData "abc">
+>> /abc/.match("abd")
+=> nil
+
+>> /abc/ =~ "oabc"
+=> 1
+>> /abc/ =~ "ooabc"
+=> 2
+
+## match character
+normal char => /a/
+escape char => /\?/ # all: (^ $ ? . / \ [ ] ( ) { } + *)
+
+>> /foo./ =~ 'foo\?'
+=> 0
+>> /foo./ =~ 'foo%'
+=> 0
+>> /foo./ =~ 'foo'
+=> nil
+
+>> /foo[ab]/ =~ 'foo%'
+=> nil
+>> /foo[ab]/ =~ 'fooa'
+=> 0
+
+>> /[a-z]/ =~ "b"
+=> 0
+>> /[a-z]/ =~ "B"
+=> nil
+
+>> /[a-zA-Z0-9]/ =~ "B"
+=> 0
+>> /[a-zA-Z0-9]/ =~ "?"
+=> nil
+
+>> /[^a-zA-Z0-9]/ =~ "?"
+=> 0
+>> /[^a-zA-Z0-9]/ =~ "5"
+=> nil
+>> /[^a-zA-Z0-9]/ =~ "aA5"
+=> nil
+
+## special
+\d same as [0-9]
+\w same as [0-9] || [a-z] || [A-Z] || _
+\s same as space || \n || \t
+\D same as !\d
+\W same as !\w
+\S same as !\s
+
+## capture with ()
+>> data = /([a-zA-Z]+),([a-zA-Z]+),(Mrs?)/.match("foo,Lu,Wende,Mr,bar")
+=> #<MatchData "Lu,Wende,Mr" 1:"Lu" 2:"Wende" 3:"Mr">
+>> data.string
+=> "Lu,Wende,Mr"
+>> $1
+=> "Lu"
+>> $2
+=> "Wende"
+>> $3
+=> "Mr"
 ```
 
 ## 第三部分：动态编程
