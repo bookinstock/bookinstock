@@ -1687,14 +1687,205 @@ escape char => /\?/ # all: (^ $ ? . / \ [ ] ( ) { } + *)
 ## capture with ()
 >> data = /([a-zA-Z]+),([a-zA-Z]+),(Mrs?)/.match("foo,Lu,Wende,Mr,bar")
 => #<MatchData "Lu,Wende,Mr" 1:"Lu" 2:"Wende" 3:"Mr">
->> data.string
-=> "Lu,Wende,Mr"
+>> $~
+=> #<MatchData "Lu,Wende,Mr" 1:"Lu" 2:"Wende" 3:"Mr">
 >> $1
 => "Lu"
 >> $2
 => "Wende"
 >> $3
 => "Mr"
+
+>> data.string
+=> "foo,Lu,Wende,Mr,bar"
+>> data[0]
+=> "Lu,Wende,Mr"
+>> data[1] # same as $1
+=> "Lu"
+>> data[2] # same as $2
+=> "Wende"
+>> data[3] # same as $3
+=> "Mr"
+>> data.captures
+=> ["Lu", "Wende", "Mr"]
+
+>> /((a)((b)c))/.match("abc")
+=> #<MatchData "abc" 1:"abc" 2:"a" 3:"bc" 4:"b">
+
+>> data = /Mr\.(?<first>Lu)\s(?<middle>Wen)\s(?<last>De)/.match("Mr.Lu Wen De")
+=> #<MatchData "Mr.Lu Wen De" first:"Lu" middle:"Wen" last:"De">
+>> data[:first]
+=> "Lu"
+>> data.captures
+=> ["Lu", "Wen", "De"]
+
+>> m = /(foo)x+(boo)/.match("aaafooxxxboobbb")
+=> #<MatchData "fooxxxboo" 1:"foo" 2:"boo">
+>> m.pre_match
+=> "aaa"
+>> m.post_match
+=> "bbb"
+>> m.begin(1)
+=> 3
+>> m.end(1)
+=> 6
+>> m.begin(2)
+=> 9
+>> m.end(2)
+=> 12
+
+>> /foo/ =~ ("foo")
+=> 0
+>> $~
+=> #<MatchData "foo">
+>> /foo/ =~ ("bar")
+=> nil
+>> $~
+=> nil
+
+# quantifier
+a?      Zero or one of a
+a*      Zero or more of a
+a+      One or more of a
+a{3}    Exactly 3 of a
+a{3,}   3 or more of a
+a{3,6}  Between 3 and 6 of a
+
+>> /\d+/.match("12345")
+=> #<MatchData "12345">
+>> /\d+?/.match("12345")
+=> #<MatchData "1">
+>> /\d+?4/.match("12345")
+=> #<MatchData "1234">
+>> /(\d+?)4/.match("12345")
+=> #<MatchData "1234" 1:"123">
+
+>> match = /.+!/.match(string)
+=> #<MatchData "abc!def!ghi!">
+>> match = /.+?!/.match("abc!def!ghi!")
+=> #<MatchData "abc!">
+
+# anchor
+^   Start of line
+$   End of line
+\A  Start of string
+\z  End of string
+\Z  End of string (exclude "\n")
+\b  Word
+
+>> /\d+(?=\.)/.match("123 456. 789")
+=> #<MatchData "456">
+>> /(?<=\.)\d+/.match("123 .456 789")
+=> #<MatchData "456">
+
+# modifier
+i  Ignore case
+m  Multiline
+x
+
+?> str = 'a.c'
+=> "a.c"
+>> re = /#{Regexp.escape(str)}/
+=> /a\.c/
+>> re.match('a.c')
+=> #<MatchData "a.c">
+>> re.match('abc')
+=> nil
+
+>> /abc/.to_s
+=> "(?-mix:abc)"
+>> /abc/.inspect
+=> "/abc/"
+
+# scan
+
+>> "test 1 2 test 33 test 4".scan(/\d/)
+=> ["1", "2", "3", "3", "4"]
+>> "test 1 2 test 33 test 4".scan(/\d+/)
+=> ["1", "2", "33", "4"]
+
+>> "foo yes oh no fun yeah okk".scan(/(f\w+)\s+(y\w+)/)
+=> [["foo", "yes"], ["fun", "yeah"]]
+
+>> "foo yes oh no fun yeah okk".scan(/(f\w+)\s+(y\w+)/) {|a,b| p "#{a}+#{b}"}
+"foo+yes"
+"fun+yeah"
+=> "foo yes oh no fun yeah okk"
+
+# split
+
+>> "abc".split("")
+=> ["a", "b", "c"]
+>> "abc".split(//)
+=> ["a", "b", "c"]
+
+>> "aaa-bbb-ccc".split('-')
+=> ["aaa", "bbb", "ccc"]
+>> "aaa-bbb-ccc".split(/-/)
+=> ["aaa", "bbb", "ccc"]
+
+>> "aa?bb!cc#dd".split(/\?|!|#/)
+=> ["aa", "bb", "cc", "dd"]
+
+>> "a-b-c-d-e".split(/-/, 3)
+=> ["a", "b", "c-d-e"]
+
+# sub/sub! && gsub/gsub!
+
+>> "aaokbbokcc".sub(/ok/, "wtf")
+=> "aawtfbbokcc"
+>> "aaokbbokcc".gsub(/ok/, "wtf")
+=> "aawtfbbwtfcc"
+
+>> "aaokbbokcc".sub(/ok/) {|e| e.upcase}
+=> "aaOKbbokcc"
+>> "aaokbbokcc".gsub(/ok/) {|e| e.upcase}
+=> "aaOKbbOKcc"
+
+>> "aDvid".sub(/([a-z])([A-Z])/, '\2\1')
+=> "David"
+
+>> "double every word".gsub(/\b(\w+)/, '\1 \1')
+=> "double double every every word word"
+
+>> /foo/ === "foo"
+=> true
+
+# grep
+>> ["USA", "UK", "France", "Germany"].select {|e| /[a-z]/ =~ e}
+=> ["France", "Germany"]
+grep use ===
+>> ["USA", "UK", "France", "Germany"].grep(/[a-z]/)
+=> ["France", "Germany"]
+>> ["USA", "UK", "France", "Germany"].grep(/[a-z]/) {|e| e.upcase}
+=> ["FRANCE", "GERMANY"]
+>> [1, 2, 3].grep(/1/) # only on string
+=> []
+
+# strscan
+
+>> require 'strscan'
+=> true
+>> ss = StringScanner.new("Testing string scanning")
+=> #<StringScanner 0/23 @ "Testi...">
+>> ss.scan_until(/ing/)
+=> "Testing"
+>> ss.pos
+=> 7
+>> ss.peek(7)
+=> " string"
+>> ss.unscan
+=> #<StringScanner 0/23 @ "Testi...">
+>> ss.pos
+=> 0
+>> ss.skip(/test/i)
+=> 4
+>> ss.rest
+=> "ing string scanning"
+>> ss
+=> #<StringScanner 4/23 "Test" @ "ing s...">
+
+http://rubular.com/
 ```
 
 ## 第三部分：动态编程
