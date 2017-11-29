@@ -1888,6 +1888,281 @@ grep use ===
 http://rubular.com/
 ```
 
+```
+# I/O
+
+>> STDIN.gets
+ok
+=> "ok\n"
+>> STDIN.getc
+ok
+=> "o"
+>> STDOUT.puts "ok"
+ok
+=> nil
+>> STDERR.puts "error"
+error
+=> nil
+>> STDERR.class
+=> IO
+
+>> $/
+=> "\n"
+>> STDIN.each_line {|line| p line}
+first
+"first\n"
+second
+"second\n"
+=> #<IO:<STDIN>>
+
+STDIN  -> $stdin
+STDOUT -> $stdout
+STDERR -> $stderr
+
+$stdout = File.open('play/tmp', 'w')
+$stdout.puts "ok" # in file
+$stdout.puts "okk" # in file
+p "foo" # in file with ""
+p "bar" # in file with ""
+puts "hi" # in file
+STDOUT.puts "hello" # in terminal
+
+-tmp file-
+ok
+okk
+"foo"
+"bar"
+hi
+```
+
+```
+# File
+
+>> File.superclass
+=> IO
+
+-tmp-
+hi hello
+foo bar
+okkkk
+
+>> file = File.new('play/tmp')
+=> #<File:play/tmp>
+
+>> file.read
+=> "hi hello\nfoo bar\nokkkk"
+
+>> file.rewind
+=> 0
+>> file.readlines
+=> ["hi hello\n", "foo bar\n", "okkkk"]
+
+>> file.rewind
+=> 0
+>> file.readline
+=> "hi hello\n"
+>> file.gets
+=> "foo bar\n"
+>> file.getc
+=> "o"
+>> file.read
+=> "kkkk"
+
+>> file.rewind
+=> 0
+>> file.each {|e| puts e}
+hi hello
+foo bar
+okkkk
+=> #<File:play/tmp>
+
+>> file.rewind
+=> 0
+>> file.each_line {|e| puts e}
+hi hello
+foo bar
+okkkk
+=> #<File:play/tmp>
+
+>> file.gets -> file.readline # bang!
+>> file.getc -> file.readchar # bang!
+>> file.getbyte -> file.readbyte # bang!
+
+>> file.rewind
+=> 0
+>> file.getc
+=> "h"
+>> file.pos
+=> 1
+>> file.pos = 9
+=> 9
+>> file.getc
+=> "f"
+
+>> file.seek(9, IO::SEEK_SET)
+=> 0
+>> file.getc
+=> "f"
+>> file.seek(9, IO::SEEK_SET)
+=> 0
+>> file.pos
+=> 9
+>> file.seek(2, IO::SEEK_CUR)
+=> 0
+>> file.pos
+=> 11
+>> file.seek(-4, IO::SEEK_CUR)
+=> 0
+>> file.pos
+=> 7
+>> file.seek(-4, IO::SEEK_END)
+=> 0
+>> file.pos
+=> 18
+
+>> file.close
+=> nil
+
+>> File.read('play/tmp')
+=> "hi hello\nfoo bar\nokkkk"
+
+>> File.readlines('play/tmp')
+=> ["hi hello\n", "foo bar\n", "okkkk"]
+
+>> file = File.new('play/tmpw', 'w') # write mode
+=> #<File:tmpw>
+>> file = File.new('play/tmpa', 'a') # append mode
+=> #<File:tmpa>
+>> file.write
+>> file.print
+>> file.puts
+
+File.open('play/tmp') do |f|
+  f.each {...}
+  f.reduce {...}
+end
+
+Errno::EACCES
+Errno::ENOENT
+Errno::EISDIR
+
+errno match os error number
+>> Errno::EACCES::Errno
+=> 13
+>> Errno::ENOENT::Errno
+=> 2
+>> Errno::EISDIR::Errno
+=> 21
+
+>> File.size('play/tmp')
+=> 22
+>> FileTest.size('play/tmp')
+=> 22
+>> File::Stat.new('play/tmp').size
+=> 22
+```
+
+```
+# FileTest
+
+>> FileTest.exist?('play/tmp')
+=> true
+>> FileTest.size('play/tmp')
+=> 22
+>> FileTest.zero?('play/tmp')
+=> false
+>> FileTest.file?('play/tmp')
+=> true
+>> FileTest.directory?('play/tmp')
+=> false
+>> FileTest.symlink?('play/tmp')
+=> false
+>> FileTest.blockdev?('play/tmp')
+=> false
+>> FileTest.pipe?('play/tmp')
+=> false
+>> FileTest.chardev?('play/tmp')
+=> false
+>> FileTest.socket?('play/tmp')
+=> false
+>> FileTest.readable?('play/tmp')
+=> true
+>> FileTest.writable?('play/tmp')
+=> true
+>> FileTest.executable?('play/tmp')
+=> false
+```
+
+```
+# Kernel#test
+
+>> test ?e, 'play/tmp' # exists?
+=> true
+>> test ?f, 'play/tmp' # file?
+=> true
+>> test ?d, 'play/tmp' # directory?
+=> false
+>> test ?z, 'play/tmp' # zero?
+=> false
+```
+
+```
+# File::Stat
+
+>> fs = File::Stat.new('play/tmp')
+=> #<File::Stat dev=0x1000004, ino=177677231, mode=0100644, nlink=1, uid=501, gid=20, rdev=0x0, size=22, blksize=4096, blocks=8, atime=2017-11-29 08:25:56 +0800, mtime=2017-11-29 08:01:40 +0800, ctime=2017-11-29 08:01:40 +0800, birthtime=2017-11-29 07:48:04 +0800>
+
+>> File.open('play/tmp') {|f| f.stat}
+=> #<File::Stat dev=0x1000004, ino=177677231, mode=0100644, nlink=1, uid=501, gid=20, rdev=0x0, size=22, blksize=4096, blocks=8, atime=2017-11-29 08:25:56 +0800, mtime=2017-11-29 08:01:40 +0800, ctime=2017-11-29 08:01:40 +0800, birthtime=2017-11-29 07:48:04 +0800>
+
+ctime -> create
+mtime -> modify
+atime -> last visit
+```
+
+```
+# Dir
+
+>> d = Dir.new('play')
+=> #<Dir:play>
+>> d.entries
+=> [".", "..", "foo.rb", "tmp"]
+
+>> Dir.entries('play')
+=> [".", "..", "foo.rb", "tmp"]
+>> Dir.glob('play/*')
+=> ["play/foo.rb", "play/tmp"]
+>> Dir['play/*']
+=> ["play/foo.rb", "play/tmp"]
+
+>> Dir.glob("info", File::FNM_CASEFOLD) # case ignore
+>> Dir.glob("info", File::FNM_DOTMATCH) # match .
+>> Dir.glob("info", File::FNM_CASEFOLD | File::FNM_DOTMATCH)
+
+newdir = 'newdir'
+newfile = 'newfile'
+Dir.mkdir(newdir)
+Dir.chdir(newdir) do
+  File.open(newfile, 'w') do |f|
+    f.puts "sample file"
+  end
+  puts "current dir: #{Dir.pwd}"
+  puts "Dir listing: "
+  p Dir.entries('.')
+  File.unlink(newfile)
+end
+Dir.rmdir(newdir)
+puts File.exist?(newdir) ? "yes" : "no"
+```
+
+# FileUtils
+
+# Pathname
+
+# StringIO
+
+# open-uri
+
 ## 第三部分：动态编程
 
 ```

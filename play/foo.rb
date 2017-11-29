@@ -1,6 +1,14 @@
-class String
-  def ^(key)
-    kenum = key.each_byte.cycle
-    each_byte.map {|byte| byte ^ kenum.next}.pack("C*")
+newdir = 'newdir'
+newfile = 'newfile'
+Dir.mkdir(newdir)
+Dir.chdir(newdir) do
+  File.open(newfile, 'w') do |f|
+    f.puts "sample file"
   end
+  puts "current dir: #{Dir.pwd}"
+  puts "Dir listing: "
+  p Dir.entries('.')
+  File.unlink(newfile)
 end
+Dir.rmdir(newdir)
+puts File.exist?(newdir) ? "yes" : "no"
