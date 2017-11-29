@@ -2155,13 +2155,97 @@ Dir.rmdir(newdir)
 puts File.exist?(newdir) ? "yes" : "no"
 ```
 
+```
 # FileUtils
 
+require 'fileutils'
+
+FileUtils.cd(dir, options)
+FileUtils.cd(dir, options) {|dir| block }
+FileUtils.pwd()
+FileUtils.mkdir(dir, options)
+FileUtils.mkdir(list, options)
+FileUtils.mkdir_p(dir, options)
+FileUtils.mkdir_p(list, options)
+FileUtils.rmdir(dir, options)
+FileUtils.rmdir(list, options)
+FileUtils.ln(target, link, options)
+FileUtils.ln(targets, dir, options)
+FileUtils.ln_s(target, link, options)
+FileUtils.ln_s(targets, dir, options)
+FileUtils.ln_sf(target, link, options)
+FileUtils.cp(src, dest, options)
+FileUtils.cp(list, dir, options)
+FileUtils.cp_r(src, dest, options)
+FileUtils.cp_r(list, dir, options)
+FileUtils.mv(src, dest, options)
+FileUtils.mv(list, dir, options)
+FileUtils.rm(list, options)
+FileUtils.rm_r(list, options)
+FileUtils.rm_rf(list, options)
+FileUtils.install(src, dest, options)
+FileUtils.chmod(mode, list, options)
+FileUtils.chmod_R(mode, list, options)
+FileUtils.chown(user, group, list, options)
+FileUtils.chown_R(user, group, list, options)
+FileUtils.touch(list, options)
+```
+
+```
 # Pathname
 
+require 'pathname'
+
+>> path = Pathname.new('play/foo.rb')
+=> #<Pathname:play/foo.rb>
+>> path.basename
+=> #<Pathname:foo.rb>
+>> path.dirname
+=> #<Pathname:play>
+>> path.extname
+=> ".rb"
+
+>> path = Pathname.new('foo/bar/bazz/ok.rb')
+=> #<Pathname:foo/bar/bazz/ok.rb>
+>> path.ascend {|dir| p dir.basename}
+#<Pathname:ok.rb>
+#<Pathname:bazz>
+#<Pathname:bar>
+#<Pathname:foo>
+=> nil
+```
+
+```
 # StringIO
 
-# open-uri
+require 'stringio'
+
+io = StringIO.new
+io.puts "foooo"
+io.string #=> "foooo\n"
+
+string act as File or IO
+```
+
+```
+# OpenURI
+
+require 'open-uri'
+
+open("http://www.ruby-lang.org/en") do |f|
+  f.each_line {|line| p line}
+  p f.base_uri         # <URI::HTTP:0x40e6ef2 URL:http://www.ruby-lang.org/en/>
+  p f.content_type     # "text/html"
+  p f.charset          # "iso-8859-1"
+  p f.content_encoding # []
+  p f.last_modified    # Thu Dec 05 02:45:02 UTC 2002
+end
+
+>> rubypage = open("http://rubycentral.org")
+=> #<StringIO:0x007fbf8b01af70 @base_uri=#...
+>> p rubypage.gets
+"<!doctype html>\n"
+```
 
 ## 第三部分：动态编程
 
