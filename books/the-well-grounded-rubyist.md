@@ -2412,3 +2412,169 @@ me
     name
 => nil
 ```
+
+```
+# & to_proc
+
+class A
+  def self.to_proc
+    proc { puts "hha" }
+  end
+end
+
+def ok
+  yield
+end
+
+>> ok &A
+>> ok &A.to_proc
+hha
+
+## Symbol
+>> ['aa', 'bb'].map(&:capitalize)
+>> ['aa', 'bb'].map &:capitalize.to_proc
+>> ['aa', 'bb'].map {|e| e.send(:capitalize)}
+
+class Symbol
+  def to_proc
+    Proc.new {|obj| obj.send(self)}
+  end
+end
+```
+
+```
+# closure
+
+a = 1
+
+def ok
+  a = 2
+  yield
+  puts a
+end
+
+>> ok { puts a}
+1
+2
+=> nil
+```
+
+```
+# counter
+
+def counter
+  n = 0
+  proc { n += 1 }
+end
+
+>> a = counter
+=> #<Proc:0x007fac63070708@(irb):50>
+>> b = counter
+=> #<Proc:0x007fac63058c48@(irb):50>
+>> a.call
+=> 1
+>> a.call
+=> 2
+>> b.call
+=> 1
+>> a.call
+=> 3
+```
+
+```
+# lambda ->
+
+>> -> { "ok" }
+=> #<Proc:0x007fac63013ad0@(irb):60 (lambda)>
+>> ->(a, b) { "ok" }
+=> #<Proc:0x007fac63000d40@(irb):61 (lambda)>
+>> ->(a, b=1) { "ok" }
+=> #<Proc:0x007fac6294b770@(irb):62 (lambda)>
+```
+
+```
+# method
+
+class A
+  def foo
+    puts "self is #{self}"
+  end
+end
+
+>> a = A.new
+=> #<A:0x007fac6301a600>
+>> meth = a.method(:foo)
+=> #<Method: A#foo>
+>> meth.call
+self is #<A:0x007fac6301a600>
+
+>> b = A.new
+=> #<A:0x007fac62963758>
+>> unbound = meth.unbind
+=> #<UnboundMethod: A#foo>
+>> unbound.bind(b).call
+self is #<A:0x007fac62963758>
+
+>> unbound = A.instance_method(:foo)
+=> #<UnboundMethod: A#foo>
+>> unbound.bind(b).call
+self is #<A:0x007fac62963758>
+```
+
+```
+# method more
+
+class A
+  def foo
+    "foo in A"
+  end
+end
+
+class B < A
+  def foo
+    "foo in B"
+  end
+end
+
+class C < B
+  def foo
+    "foo in C"
+  end
+end
+
+>> c = C.new
+=> #<C:0x007faced021bc8>
+>> c.foo
+=> "foo in C"
+>> unbind_b = B.instance_method(:foo)
+=> #<UnboundMethod: B#foo>
+>> unbind_b.bind(c).call
+=> "foo in B"
+>> unbind_a = A.instance_method(:foo)
+=> #<UnboundMethod: A#foo>
+>> unbind_a.bind(c).call
+=> "foo in A"
+```
+
+```
+# lambda haha
+
+>> foo = ->(a, b) { a + b }
+=> #<Proc:0x007facec03eb98@(irb):30 (lambda)>
+>> foo.call(1, 2)
+=> 3
+>> foo[1, 2]
+=> 3
+>> foo.(1, 2)
+=> 3
+```
+
+```
+# eval
+
+eval -> danger!
+instance_eval {} -> into object context
+instance_exec(x) {|x| ...}
+class_eval {} -> into class context
+class_eval(x) {|x| ...}
+```
