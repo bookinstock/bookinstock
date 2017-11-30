@@ -342,8 +342,8 @@ end
 
 >> A === A.new
 => true
->> AA === A.new
-=> false
+>> A === AA.new
+=> true
 >> AA === A
 => false
 
@@ -2242,7 +2242,7 @@ open("http://www.ruby-lang.org/en") do |f|
 end
 
 >> rubypage = open("http://rubycentral.org")
-=> #<StringIO:0x007fbf8b01af70 @base_uri=#...
+=> #<StringIO:0x007fbf8b01af70 @base_uri=#...>
 >> p rubypage.gets
 "<!doctype html>\n"
 ```
@@ -2250,5 +2250,165 @@ end
 ## 第三部分：动态编程
 
 ```
-# basic object
+# singleton method
+
+class A
+  def self.ok
+    "ok"
+  end
+end
+
+class AA < A
+end
+
+?> AA.ok
+=> "ok"
+>> AA.singleton_class.ancestors
+=> [#<Class:AA>, #<Class:A>, #<Class:Object>, #<Class:BasicObject>, Class, Module, Object, PP::ObjectMixin, Kernel, BasicObject]
+```
+
+```
+# Singleton Pattern
+
+require 'singleton'
+```
+
+```
+# pass-through
+
+class A
+  def ok
+    "ok"
+  end
+end
+
+class A
+  alias __ok__ ok
+
+  def ok
+    p "foo"
+    __ok__
+  end
+end
+
+>> A.new.ok
+"foo"
+=> "ok"
+>> A.new.__ok__
+=> "ok"
+```
+
+```
+# extend
+
+class A
+  def ok
+    "ok"
+  end
+end
+
+module M
+  def ok
+    p "foo"
+    super
+  end
+end
+
+a = A.new
+a.extend(M)
+
+>> a.ok
+"foo"
+=> "ok"
+```
+
+```
+# refinement
+
+module M
+  refine String do
+    def ok
+      "ok"
+    end
+  end
+end
+
+class A
+  using M
+
+  def hi
+    "".ok
+  end
+
+  def self.hello
+    "".ok
+  end
+end
+
+?> A.new.hi
+=> "ok"
+>> A.hello
+=> "ok"
+```
+
+```
+# BasicObject
+
+>> BasicObject.instance_methods.sort
+=> [:!, :!=, :==, :__id__, :__send__, :equal?, :instance_eval, :instance_exec]
+>> BasicObject.singleton_methods
+=> []
+```
+
+```
+# method_missing
+
+class A < BasicObject
+  attr_reader :result
+
+  def initialize
+    @result = ""
+    @indent_level = 0
+  end
+
+  def indent(str)
+    "#{'  ' * @indent_level}#{str}\n"
+  end
+
+  def method_missing(str, &blk)
+    @result << indent(str)
+    if blk
+      @indent_level += 1
+      yield(self)
+      @indent_level -= 1
+      # yield(self)
+    end
+  end
+
+  def inspect
+    __id__
+  end
+end
+
+a = A.new
+a.me do |me|
+  me.name { "wende" }
+  me.age { 25 }
+  me.mom do |mon|
+    mon.name { "fen" }
+  end
+  me.dad do |dad|
+    dad.name { "hong" }
+  end
+end
+
+>> puts a.result
+me
+  name
+  age
+  mom
+    name
+  dad
+    name
+=> nil
 ```
