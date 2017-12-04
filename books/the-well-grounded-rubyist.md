@@ -2578,3 +2578,114 @@ instance_exec(x) {|x| ...}
 class_eval {} -> into class context
 class_eval(x) {|x| ...}
 ```
+
+```
+# define_method
+
+class A
+  foo = "foo"
+  define_method :ok do
+    foo
+  end
+end
+>> A.new.ok
+=> "foo"
+```
+
+```
+# Binding
+
+Kernel#binding # get binding in current context
+```
+
+```
+# Thread
+
+t = Thread.new do
+  puts "start"
+  Thread.stop
+  puts "resume"
+end
+
+start
+=> #<Thread:0x007fbe130443f8@(irb):59 sleep>
+>> t.status
+=> "sleep"
+>> t.stop?
+=> true
+>> t.alive?
+=> true
+>> t.wakeup
+=> #<Thread:0x007fbe130443f8@(irb):59 run>
+resume
+>> t.join
+=> #<Thread:0x007fbe130443f8@(irb):59 dead>
+```
+
+```
+# Fiber
+
+f = Fiber.new do
+  puts "first"
+  Fiber.yield
+  puts "second"
+  Fiber.yield
+  puts "third"
+end
+
+=> #<Fiber:0x007fbe1387b490>
+>> f.resume
+first
+=> nil
+>> puts "hello"
+hello
+=> nil
+>> f.resume
+second
+=> nil
+>> puts "hello again"
+hello again
+=> nil
+>> f.resume
+third
+=> nil
+>> f.resume
+FiberError: dead fiber called
+```
+
+```
+# Socket
+
+## foo.rb
+require 'socket'
+s = TCPServer.new(3939)
+conn = s.accept
+conn.puts "hi there"
+conn.puts "here is the date:"
+conn.puts `date`
+conn.close
+s.close
+
+➜  bookinstock git:(master) ruby play/foo.rb
+
+➜  bookinstock git:(master) ✗ telnet localhost 3939
+Trying ::1...
+telnet: connect to address ::1: Connection refused
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+hi there
+here is the date:
+Fri  1 Dec 2017 07:46:50 CST
+Connection closed by foreign host.
+
+# revised server
+s = TCPServer.new(3939)
+loop do
+  conn = s.accept
+  conn.puts "hi there"
+  conn.puts "here is the date:"
+  conn.puts `date`
+  conn.close
+end
+```

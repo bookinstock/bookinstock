@@ -1,32 +1,24 @@
-# method more
+require 'socket'
 
-class A
-  def foo
-    "foo in A"
-  end
+# revised server
+s = TCPServer.new(3939)
+loop do
+  conn = s.accept
+  conn.puts "hi there"
+  conn.puts "here is the date:"
+  conn.puts `date`
+  conn.close
 end
 
-class B < A
-  def foo
-    "foo in B"
-  end
-end
+# ➜  bookinstock git:(master) ruby play/foo.rb 
 
-class C < B
-  def foo
-    "foo in C"
-  end
-end
-
-?> c = C.new
-=> #<C:0x007faced021bc8>
->> c.foo
-=> "foo in C"
->> unbind_b = B.instance_method(:foo)
-=> #<UnboundMethod: B#foo>
->> unbind_b.bind(c).call
-=> "foo in B"
->> unbind_a = A.instance_method(:foo)
-=> #<UnboundMethod: A#foo>
->> unbind_a.bind(c).call
-=> "foo in A"
+# ➜  bookinstock git:(master) ✗ telnet localhost 3939
+# Trying ::1...
+# telnet: connect to address ::1: Connection refused
+# Trying 127.0.0.1...
+# Connected to localhost.
+# Escape character is '^]'.
+# hi there
+# here is the date:
+# Fri  1 Dec 2017 07:46:50 CST
+# Connection closed by foreign host.
