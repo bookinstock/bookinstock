@@ -32,8 +32,8 @@
 # Global Variables
 
 >> p $0 # file name
-"irb"
-=> "irb"
+"foo.rb"
+=> "foo.rb"
 >> p $$ # process id
 99207
 => 99207
@@ -2689,3 +2689,94 @@ loop do
   conn.close
 end
 ```
+
+```
+# system
+
+>> system 'date'
+Mon  4 Dec 2017 23:10:08 CST
+=> true
+>> `date`
+=> "Mon  4 Dec 2017 23:10:11 CST\n"
+
+>> system('pwd')
+/Users/wendelu/Documents/docs/bookinstock
+=> true
+>> `pwd`
+=> "/Users/wendelu/Documents/docs/bookinstock\n"
+>> $?
+=> #<Process::Status: pid 53044 exit 0>
+
+>> cmd = "ls"
+=> "ls"
+>> %x(#{cmd})
+=> "README.md\nbooks\nfoods\ngem\nplay\ntools\ntravel\n"
+```
+
+```
+# open popen3
+
+open("|cat", "w+") {|p| p.puts("hi"); p.gets}
+
+require 'open3'
+stdin, stdout, stderr = Open3.popen3("cat")
+stdin.puts("hi.\nbye")
+stdout.gets
+stdout.gets
+
+```
+
+```
+# delegator
+
+use method_missing
+use respond_to_missing?
+```
+
+```
+# callbacks
+
+Module#included
+Module#extended
+Class#inherited
+BasicObject#method_missing
+Module#const_missing -> const_set
+Module#method_added
+BasicObject#singleton_method_added
+```
+
+```
+# query self
+
+"string".methods.grep(/case/).sort
+"string".methods.grep(/.!/).sort
+
+>> String.methods.grep(/method/).sort
+=> [:define_singleton_method, :instance_method, :instance_methods, :method, :method_defined?, :methods, :private_class_method, :private_instance_methods, :private_method_defined?, :private_methods, :protected_instance_methods, :protected_method_defined?, :protected_methods, :public_class_method, :public_instance_method, :public_instance_methods, :public_method, :public_method_defined?, :public_methods, :singleton_method, :singleton_methods]
+
+instance_methods
+public_instance_methods
+protected_instance_methods
+private_instance_methods
+
+Range overwrite methods
+Range.instance_methods(false) - Enumerable.instance_methods(false)
+
+>> local_variables
+=> [:_]
+>> instance_variables
+=> []
+>> global_variables
+=> [:$_, :$~, :$;, :$-F, :$@, :$!, :$SAFE, :$&, :$`, :$', :$+, :$=, :$KCODE, :$-K, :$,, :$/, :$-0, :$\, :$stdin, :$stdout, :$stderr, :$>, :$<, :$., :$FILENAME, :$-i, :$*, :$:, :$-I, :$LOAD_PATH, :$", :$LOADED_FEATURES, :$?, :$$, :$VERBOSE, :$-v, :$-w, :$-W, :$DEBUG, :$-d, :$0, :$PROGRAM_NAME, :$-p, :$-l, :$-a, :$binding]
+
+$: $LOAD_PATH
+$~ MatchDate instance
+$0 __FILE__ filename
+```
+
+```
+# caller
+
+e.backtrace
+```
+
