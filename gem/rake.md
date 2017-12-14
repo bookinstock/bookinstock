@@ -1,130 +1,119 @@
-# Rake
+#Rake
 
 ## Intro
 
-- 'Rake' stands for 'Ruby Maker'.
-- Specify tasks and dependencies.
+- rake stands for ruby maker
+- specify tasks and its dependencies
+- https://github.com/ruby/rake
 
 ## Feature
 
 ### Basic:
 
-- Just Ruby DSL.
-- Define tasks.
-- Task dependencies.
-- Task namespace.
-- Invoke tasks.
-- Default task.
+- ruby dsl
+- define tasks
+- define task dependencies
+- define task with args or env variables
+- define tasks in namespace
+- define default task
+- invoke other tasks
 
 ### Advanced:
 
-- Supports rule patterns to synthesize implicit tasks.
-- Intellectual flexible 'file_lists' that act like array.
-- Library of prepackaged tasks to build rakefile easier.
-- Support parallel execution of tasks.
+- support rule pattern for implicit tasks
+- support parallel execution of tasks
+- support flexible file lists that act like array,
+- library of prepackaged tasks to build Rakefile easier.
 
 ## Commands
 
-- `rake` => run default task.
-- `rake --tasks` => list desc tasks.
-- `rake --all --tasks` => list all tasks.
-- `rake --dry-run 'foo:bar'` => show dependencies.
-- `rake --rakefile my_task_file my_task`
+- `rake` # run default task.
+- `rake -T`  # list desc tasks.
+- `rake -AT` # list all tasks.
+- `rake --dry-run taskname` # show dependencies.
+- `rake --rakefile taskfile taskname` # ...learn more...
+
+## Test
+
+1. write logic in model, then test model methods.
+2. customize spec for rake tasts, check links below:
+   https://robots.thoughtbot.com/test-rake-tasks-like-a-boss
+   https://www.wetestrails.com/blog/test-rails-rake-tasks-with-rspec
+   https://github.com/eliotsykes/rails-testing-toolbox/blob/master/tasks.rb
 
 ## Examples
 
-### Define tasks:
+- define task:
+
 ```
   desc 'a'
   task :a do
-    debugger
+  	# TODO
   end
 
   rake a
 ```
 
-### Define tasks with rails env:
+- define task depends on rails env:
+
 ```
   task a: :environment do
-    debugger
+    # TODO
   end
 
   rake a
 ```
 
-### Define tasks with namespace:
+- define task with namespace:
+
 ```
   namespace :foo do
     task a: :environment do
-      debugger
+      # TODO
     end
   end
 
   rake foo:a
 ```
 
-### Define tasks with dependencies:
+- define task with dependencies:
+
 ```
   namespace :foo do
-    task a: [:b, 'bar:c'] do
-      debugger
-    end
-
-    task :b do
-      p 'b'
-    end
-  end
-
-  namespace :bar do
-    task :c do
-      p 'c'
+    task a: [:b, :c, 'bar:c'] do
+      # TODO
     end
   end
 
   rake foo:a
-
-  b
-  c
 ```
 
-### Invoke tasks:
+- invoke tasks (with args):
+
 ```
   namespace :foo do
     task :a do
       Rake::Task['foo:b'].invoke
-      Rake::Task['bar:c'].invoke
-      Rake::Task['foo:d'].invoke('1', '2')
-      debugger
-    end
-
-    task :b do
-      p 'b'
-    end
-
-    task :d, [:arg_1, :arg_2] do |t, args|
-      p 'd'
-    end
-  end
-
-  namespace :bar do
-    task :c do
-      p 'c'
+      Rake::Task['foo:c'].invoke('1', '2')
+      Rake::Task['bar:d'].invoke
+      # TODO
     end
   end
 
   rake foo:a
 ```
 
-### Pass args to tasks:
+- pass args to task:
+
 ```
   namespace :foo do
     task :a, [:arg_1, :arg_2] => :environment do |t, args|
       args.with_defaults(arg_1: "first", arg_2: "second")
-      p args.to_hash # => {:arg_1=>"1", :arg_2=>"2"}
-      p args.to_a # => ["1", "2"]
-      p args.arg_1 # '1'
-      p args.arg_2 # '2'
-      debugger
+      args.to_hash # => {:arg_1=>"1", :arg_2=>"2"}
+      args.to_a # => ["1", "2"]
+      args.arg_1 # '1'
+      args.arg_2 # '2'
+      # TODO
     end
   end
 
@@ -134,40 +123,33 @@
   rake 'foo:a'
 ```
 
-### Pass env variable to tasks:
+- pass env variables to task:
+
 ```
   namespace :foo do
     task :a do
       ENV['OK']
-      debugger
+      ENV['OKK'].split(',')
+      # TODO
     end
   end
 
   rake foo:a OK=okay
+  rake foo:A OKK=a,b,c
 ```
 
-### Pass env variable to task (convert to array):
-```
-  namespace :foo do
-    task :a do
-      ENV['OK'].split(',')
-      debugger
-    end
-  end
+- default task:
 
-  rake foo:A OK=a,b,c
-```
-
-### Default tasks:
 ```
   task default: [:a, :b] do
-    debugger
+    # TODO
   end
 
   rake
 ```
 
-### Open tasks:
+- open task ( add more ):
+
 ```
   namespace :foo do
     task :a do
@@ -185,15 +167,28 @@
   "new"
 ```
 
-### Work with progress_bar:
+- ways to invoke tasks:
+
+```
+  `bundle exec rake foo:a[1,2,3]`
+
+  Rake::Task['foo:a'].invoke(1,2,3)
+
+  Rake.application.invoke_task('foo:a[1,2,3]')
+```
+
+- example with progress bar:
+
 ```
   require 'progress_bar'
 
   desc "init score"
   task init_score: :environment do
-    sql_query = "SELECT user_id, SUM(amount) as total_amount FROM orders " \
-                "WHERE state = 'completed' and amount > 0 " \
-                "GROUP BY user_id;"
+    sql_query = <<-SQL.gsub(/\s+/, " ").strip
+    	SELECT user_id, SUM(amount) as total_amount FROM orders
+        WHERE state = 'completed' and amount > 0
+        GROUP BY user_id;
+    SQL
 
     user_id_with_total_amount = Order.connection.execute(sql_query)
     bar = ProgressBar.new(user_id_with_total_amount.size)
@@ -202,9 +197,8 @@
       Order.transaction do
         user_id_with_total_amount.each do |(user_id, total_amount)|
           next unless user = User.find_by(id: user_id)
-          score_action = user.users_score_actions.find_or_initialize_by(action_name: 'init')
-          score_action.amount = [total_amount, 2000].min
-          score_action.save
+          score = user.scores.find_or_initialize_by(status: "init")
+          score.update(amount: [total_amount, 2000].min)
           bar.increment!
         end
       end
@@ -213,8 +207,3 @@
     end
   end
 ```
-
-## Resources
-
-- https://github.com/ruby/rake
-
