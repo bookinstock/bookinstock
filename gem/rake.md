@@ -7,14 +7,14 @@
 
 ## Feature
 
-### Basic
+### Basic:
 
-- just ruby dsl.
-- define tasks.
-- task dependencies.
-- task namespace.
-- invoke tasks.
-- default task.
+- Just Ruby DSL.
+- Define tasks.
+- Task dependencies.
+- Task namespace.
+- Invoke tasks.
+- Default task.
 
 ### Advanced:
 
@@ -28,111 +28,97 @@
 - `rake` => run default task.
 - `rake --tasks` => list desc tasks.
 - `rake --all --tasks` => list all tasks.
-- `rake --dry-run 'ok:foo'` => show dependencies.
+- `rake --dry-run 'foo:bar'` => show dependencies.
 - `rake --rakefile my_task_file my_task`
 
 ## Examples
 
-### define task
+### Define tasks:
 ```
-  desc 'foo'
-  task :foo do
+  desc 'a'
+  task :a do
     debugger
   end
 
-  rake foo
+  rake a
 ```
 
-### define task with rails env
+### Define tasks with rails env:
 ```
-  desc 'foo'
-  task foo: :environment do
+  task a: :environment do
     debugger
   end
 
-  rake foo
+  rake a
 ```
 
-### define task with namespace
+### Define tasks with namespace:
 ```
-  namespace :ok do
-    desc 'foo'
-    task foo: :environment do
+  namespace :foo do
+    task a: :environment do
       debugger
     end
   end
 
-  rake ok:foo
+  rake foo:a
 ```
 
-### define task with dependencies
+### Define tasks with dependencies:
 ```
-  namespace :ok do
-    desc 'foo'
-    task foo: [:aaa, :bbb, 'other:ccc'] do
+  namespace :foo do
+    task a: [:b, 'bar:c'] do
       debugger
     end
 
-    task aaa: :environment do
-      p 'aaa'
-    end
-
-    task bbb: :environment do
-      p 'bbb'
+    task :b do
+      p 'b'
     end
   end
 
-  namespace :other do
-    task ccc: :environment do
-      p 'ccc'
+  namespace :bar do
+    task :c do
+      p 'c'
     end
   end
 
-  rake ok:foo
+  rake foo:a
 
-  aaa
-  bbb
-  ccc
+  b
+  c
 ```
 
-### invoke tasks
+### Invoke tasks:
 ```
-  namespace :ok do
-    desc 'foo'
-    task foo: :environment do
-      Rake::Task['ok:aaa'].invoke
-      Rake::Task['ok:bbb'].invoke('first, second')
-      Rake::Task['other:ccc'].invoke
+  namespace :foo do
+    task :a do
+      Rake::Task['foo:b'].invoke
+      Rake::Task['bar:c'].invoke
+      Rake::Task['foo:d'].invoke('1', '2')
       debugger
     end
 
-    task aaa: :environment do
-      p 'aaa'
+    task :b do
+      p 'b'
     end
 
-    task :bbb, [:arg_1, :arg_2] => :environment do
-      p 'bbb'
-    end
-  end
-
-  namespace :other do
-    task ccc: :environment do
-      p 'ccc'
+    task :d, [:arg_1, :arg_2] do |t, args|
+      p 'd'
     end
   end
 
-  rake ok:foo
+  namespace :bar do
+    task :c do
+      p 'c'
+    end
+  end
 
-  aaa
-  bbb
-  ccc
+  rake foo:a
 ```
 
-### pass args to task
+### Pass args to tasks:
 ```
-  namespace :ok do
-    desc 'foo'
-    task :foo, [:arg_1, :arg_2] => :environment do |t, args|
+  namespace :foo do
+    task :a, [:arg_1, :arg_2] => :environment do |t, args|
       args.with_defaults(arg_1: "first", arg_2: "second")
       p args.to_hash # => {:arg_1=>"1", :arg_2=>"2"}
       p args.to_a # => ["1", "2"]
@@ -142,68 +128,64 @@
     end
   end
 
-  rake 'ok:foo[1,2]'
-
-  rake 'ok:foo[,2]'
-
-  rake 'ok:foo[,2]'
+  rake 'foo:a[1,2]'
+  rake 'foo:a[1,]'
+  rake 'foo:a[,2]'
+  rake 'foo:a'
 ```
 
-### pass env variable to task
+### Pass env variable to tasks:
 ```
-  namespace :ok do
-    desc 'foo'
-    task foo: :environment do
-      ENV['AAA']
+  namespace :foo do
+    task :a do
+      ENV['OK']
       debugger
     end
   end
 
-  rake ok:foo AAA=aaa
+  rake foo:a OK=okay
 ```
 
-### pass env variable to task (convert to array)
+### Pass env variable to task (convert to array):
 ```
-  namespace :ok do
-    desc 'foo'
-    task foo: :environment do
-      ENV['AAA'].split(',')
+  namespace :foo do
+    task :a do
+      ENV['OK'].split(',')
       debugger
     end
   end
 
-  rake ok:foo AAA=aaa,bbb,ccc
+  rake foo:A OK=a,b,c
 ```
 
-### default task
+### Default tasks:
 ```
-  task default: [:foo, :bar] do
-    p 'default'
+  task default: [:a, :b] do
     debugger
   end
 
   rake
 ```
 
-### open task
+### Open tasks:
 ```
-  namespace :ok do
-    task foo: :environment do
-      p 'old foo'
+  namespace :foo do
+    task :a do
+      p 'old'
     end
 
-    task foo: :environment do
-      p 'new foo'
+    task :a do
+      p 'new'
     end
   end
 
-  rake ok:foo
+  rake foo:a
 
-  "old foo"
-  "new foo"
+  "old"
+  "new"
 ```
 
-### work with progress_bar
+### Work with progress_bar:
 ```
   require 'progress_bar'
 
