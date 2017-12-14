@@ -37,9 +37,9 @@
 
 1. write logic in model, then test model methods.
 2. customize spec for rake tasts, check links below:
-   https://robots.thoughtbot.com/test-rake-tasks-like-a-boss
-   https://www.wetestrails.com/blog/test-rails-rake-tasks-with-rspec
-   https://github.com/eliotsykes/rails-testing-toolbox/blob/master/tasks.rb
+  - https://robots.thoughtbot.com/test-rake-tasks-like-a-boss
+  - https://www.wetestrails.com/blog/test-rails-rake-tasks-with-rspec
+  - https://github.com/eliotsykes/rails-testing-toolbox/blob/master/tasks.rb
 
 ## Examples
 
@@ -48,7 +48,7 @@
 ```
   desc 'a'
   task :a do
-  	# TODO
+    # TODO
   end
 
   rake a
