@@ -177,6 +177,12 @@
   Rake.application.invoke_task('foo:a[1,2,3]')
 ```
 
+- rails load rake tasks:
+
+```
+  Rails.application.load_tasks
+```
+
 - example with progress bar:
 
 ```
