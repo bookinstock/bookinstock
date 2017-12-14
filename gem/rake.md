@@ -18,10 +18,10 @@
 
 ### Advanced:
 
-- supports rule patterns to synthesize implicit tasks.
-- intellectual flexible 'file_lists' that act like array.
-- library of prepackaged tasks to build rakefile easier.
-- support parallel execution of tasks.
+- Supports rule patterns to synthesize implicit tasks.
+- Intellectual flexible 'file_lists' that act like array.
+- Library of prepackaged tasks to build rakefile easier.
+- Support parallel execution of tasks.
 
 ## Commands
 
