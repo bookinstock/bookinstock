@@ -101,7 +101,7 @@
     desc 'foo'
     task foo: :environment do
       Rake::Task['ok:aaa'].invoke
-      Rake::Task['ok:bbb'].invoke
+      Rake::Task['ok:bbb'].invoke('first, second')
       Rake::Task['other:ccc'].invoke
       debugger
     end
@@ -110,7 +110,7 @@
       p 'aaa'
     end
 
-    task bbb: :environment do
+    task :bbb, [:arg_1, :arg_2] => :environment do
       p 'bbb'
     end
   end
@@ -128,16 +128,16 @@
   ccc
 ```
 
-### pass variable to task
+### pass args to task
 ```
   namespace :ok do
     desc 'foo'
     task :foo, [:arg_1, :arg_2] => :environment do |t, args|
       args.with_defaults(arg_1: "first", arg_2: "second")
-      p args.arg_1 # '1'
-      p args.arg_2 # '2'
       p args.to_hash # => {:arg_1=>"1", :arg_2=>"2"}
       p args.to_a # => ["1", "2"]
+      p args.arg_1 # '1'
+      p args.arg_2 # '2'
       debugger
     end
   end
